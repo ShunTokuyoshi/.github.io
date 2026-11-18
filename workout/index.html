@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>筋トレ記録</title>
+  <meta name="theme-color" content="#ff6b35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="筋トレ記録">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- インターバルタイマー（実行中のみ表示） -->
+  <div id="timerBar" class="timer-bar hidden">
+    <div class="timer-label">休憩</div>
+    <div id="timerTime" class="timer-time">1:30</div>
+    <div class="timer-btns">
+      <button data-timer="-15">-15</button>
+      <button data-timer="+15">+15</button>
+      <button data-timer="stop" class="danger">停止</button>
+    </div>
+    <div class="timer-progress"><div id="timerProgress"></div></div>
+  </div>
+
+  <header class="app-header">
+    <h1 id="pageTitle">記録</h1>
+    <button id="timerQuick" class="icon-btn" aria-label="タイマー開始">⏱</button>
+  </header>
+
+  <main>
+    <!-- 記録 -->
+    <section id="tab-log" class="tab active">
+      <div class="date-row">
+        <button class="icon-btn" id="prevDay" aria-label="前の日">‹</button>
+        <input type="date" id="logDate">
+        <button class="icon-btn" id="nextDay" aria-label="次の日">›</button>
+      </div>
+      <div class="row gap">
+        <select id="menuStart"><option value="">メニューから開始…</option></select>
+        <select id="exerciseAdd"><option value="">種目を追加…</option></select>
+      </div>
+      <div id="logList"></div>
+      <p id="logEmpty" class="empty">まだ記録がありません。<br>上から種目かメニューを選んでください。</p>
+    </section>
+
+    <!-- 履歴 -->
+    <section id="tab-history" class="tab">
+      <div class="cal-head">
+        <button class="icon-btn" id="prevMonth" aria-label="前の月">‹</button>
+        <h2 id="calTitle"></h2>
+        <button class="icon-btn" id="nextMonth" aria-label="次の月">›</button>
+      </div>
+      <div class="cal-grid cal-week">
+        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
+      </div>
+      <div id="calGrid" class="cal-grid"></div>
+      <div id="calStats" class="muted center"></div>
+      <div id="dayDetail"></div>
+    </section>
+
+    <!-- グラフ -->
+    <section id="tab-chart" class="tab">
+      <div class="row gap">
+        <select id="chartExercise"></select>
+        <select id="chartMetric"></select>
+      </div>
+      <div class="row gap range-row">
+        <button data-range="30">1ヶ月</button>
+        <button data-range="90" class="on">3ヶ月</button>
+        <button data-range="365">1年</button>
+        <button data-range="0">全期間</button>
+      </div>
+      <div id="chartBox" class="card chart-box"></div>
+      <h3>自己ベスト</h3>
+      <div id="prList"></div>
+    </section>
+
+    <!-- メニュー -->
+    <section id="tab-menu" class="tab">
+      <div class="card">
+        <h3>メニューを作成</h3>
+        <input type="text" id="menuName" placeholder="例：胸の日" maxlength="30">
+        <div id="menuPicker" class="chip-list"></div>
+        <button id="menuSave" class="primary full">保存</button>
+      </div>
+      <div id="menuList"></div>
+    </section>
+
+    <!-- 種目・設定 -->
+    <section id="tab-settings" class="tab">
+      <div class="card">
+        <h3>種目を追加</h3>
+        <input type="text" id="exName" placeholder="例：インクラインダンベルプレス" maxlength="40">
+        <div class="row gap">
+          <select id="exType">
+            <option value="strength">筋トレ（kg × 回）</option>
+            <option value="bodyweight">自重（回のみ）</option>
+            <option value="cardio">有酸素（分・km）</option>
+          </select>
+          <select id="exPart">
+            <option>胸</option><option>背中</option><option>脚</option><option>肩</option>
+            <option>腕</option><option>腹</option><option>有酸素</option><option>その他</option>
+          </select>
+        </div>
+        <button id="exSave" class="primary full">追加</button>
+      </div>
+      <div id="exList"></div>
+
+      <div class="card">
+        <h3>タイマー設定</h3>
+        <label class="row between">休憩時間
+          <select id="restSec">
+            <option value="30">30秒</option><option value="45">45秒</option><option value="60">60秒</option>
+            <option value="90">90秒</option><option value="120">2分</option><option value="180">3分</option>
+            <option value="240">4分</option><option value="300">5分</option>
+          </select>
+        </label>
+        <label class="row between">セット追加で自動スタート <input type="checkbox" id="autoTimer"></label>
+        <label class="row between">音 <input type="checkbox" id="soundOn"></label>
+        <label class="row between">バイブ <input type="checkbox" id="vibeOn"></label>
+        <p class="muted small">※iPhoneのSafariはバイブに対応していません（音で通知されます）。</p>
+      </div>
+
+      <div class="card">
+        <h3>データ</h3>
+        <p class="muted small">記録はこの端末のブラウザ内に保存されます。機種変更の前などにバックアップしてください。</p>
+        <div class="row gap">
+          <button id="exportBtn">バックアップを保存</button>
+          <button id="importBtn">バックアップから復元</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-tab="log" class="active"><span>✏️</span>記録</button>
+    <button data-tab="history"><span>📅</span>履歴</button>
+    <button data-tab="chart"><span>📈</span>グラフ</button>
+    <button data-tab="menu"><span>📋</span>メニュー</button>
+    <button data-tab="settings"><span>⚙️</span>種目・設定</button>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
