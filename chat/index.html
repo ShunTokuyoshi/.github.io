@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>ほんやくチャット</title>
+  <meta name="theme-color" content="#2f6fed">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 入室画面 -->
+  <section id="setup" class="screen">
+    <div class="card">
+      <h1>💬 ほんやくチャット</h1>
+      <p class="lead">相手のメッセージが、あなたの言語に自動で翻訳されます。</p>
+
+      <label>名前
+        <input id="nameInput" type="text" maxlength="20" placeholder="例: Shun" autocomplete="nickname">
+      </label>
+      <label>あなたの言語（この言語で読みます）
+        <select id="langSelect"></select>
+      </label>
+
+      <button id="createBtn" class="primary">新しいルームを作る</button>
+
+      <div class="divider"><span>または</span></div>
+
+      <label>ルームコードで参加
+        <input id="codeInput" type="text" maxlength="8" placeholder="例: K7Q2MX" autocapitalize="characters" autocomplete="off">
+      </label>
+      <button id="joinBtn">参加する</button>
+
+      <p id="setupError" class="error" hidden></p>
+    </div>
+  </section>
+
+  <!-- チャット画面 -->
+  <section id="chat" class="screen" hidden>
+    <header class="chat-header">
+      <button id="leaveBtn" class="icon-btn" aria-label="退出">‹</button>
+      <div class="room-info">
+        <div class="room-title">ルーム <span id="roomCode"></span></div>
+        <div id="status" class="status">接続中…</div>
+      </div>
+      <button id="shareBtn" class="icon-btn" aria-label="招待リンクを共有">🔗</button>
+    </header>
+
+    <main id="messages" class="messages" aria-live="polite"></main>
+
+    <form id="sendForm" class="composer">
+      <textarea id="msgInput" rows="1" placeholder="メッセージを入力" enterkeyhint="send"></textarea>
+      <button id="sendBtn" class="primary" type="submit" aria-label="送信">➤</button>
+    </form>
+  </section>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="peerjs.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
